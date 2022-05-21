@@ -8,6 +8,7 @@ import { proposalArgs1, proposalArgs2 } from "./utils";
 const ABSTAIN = 0
 const YAY = 1
 const NAY = 2
+const BAD_VOTE = 3
 const MEMBER_VOTES_YAY = [ABSTAIN, YAY, YAY, YAY, NAY, NAY]
 const MEMBER_VOTES_NAY = [NAY, NAY, NAY, NAY, YAY, YAY]
 const NO_PROPOSAL = 3
@@ -231,6 +232,11 @@ describe("AssemblyDAO", () => {
                 await dao.connect(member1).castVote(1, YAY)
                 await expect(dao.connect(member1).castVote(1, NAY))
                     .to.be.revertedWith("AssemblyDAO: member already voted")
+            })
+
+            it("should throw when casted vote is not of type VoteType", async() => {
+                await expect(dao.connect(member1).castVote(1, BAD_VOTE))
+                    .to.be.revertedWith("Transaction reverted: function was called with incorrect parameters")
             })
 
             context("when all members vote", async() => {
