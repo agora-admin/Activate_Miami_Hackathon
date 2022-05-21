@@ -8,8 +8,10 @@ import { proposalArgs1, proposalArgs2 } from "./utils";
 const ABSTAIN = 0
 const YAY = 1
 const NAY = 2
-const MEMBER_VOTES = [ABSTAIN, YAY, YAY, YAY, NAY, NAY]
+const MEMBER_VOTES_YAY = [ABSTAIN, YAY, YAY, YAY, NAY, NAY]
+const MEMBER_VOTES_NAY = [NAY, NAY, NAY, NAY, YAY, YAY]
 const NO_PROPOSAL = 3
+const ONE_WEEK = 86400 * 7
 
 describe("AssemblyDAO", () => {
     
@@ -183,7 +185,7 @@ describe("AssemblyDAO", () => {
 
             it("should record votes", async() => {
                 for (let i = 0; i < MEMBERS.length; i++) {
-                    await dao.connect(MEMBERS[i]).castVote(1, MEMBER_VOTES[i])
+                    await dao.connect(MEMBERS[i]).castVote(1, MEMBER_VOTES_YAY[i])
                 }
 
                 expect(await dao.getVoteCount(1, ABSTAIN))
@@ -210,5 +212,110 @@ describe("AssemblyDAO", () => {
                     .to.be.revertedWith("AssemblyDAO: member already voted")
             })
         })
+
+        context("when all members vote", async() => {
+            beforeEach(async() => {
+                for (let i = 0; i < MEMBERS.length; i++) {
+                    await dao.addMember(MEMBERS[i].address)
+                }
+    
+                await dao.connect(member1).createProposal(...proposalArgs1)
+
+                for (let i = 0; i < MEMBERS.length; i++) {
+                    await dao.connect(MEMBERS[i]).castVote(1, MEMBER_VOTES_YAY[i])
+                }
+            })
+
+            it("should track total votes", async() => {
+                expect(await dao.totalVotes(1))
+                    .to.eq(MEMBERS.length)
+            })
+
+            it("should track if member voted", async() => {
+                expect(await dao.hasVoted(1, member1.address))
+                    .to.be.true
+
+                expect(await dao.hasVoted(1, owner.address))
+                    .to.be.false
+            })
+        })
+
+        context("when the voting period has ended", async() => {
+            beforeEach(async() => {
+                for (let i = 0; i < MEMBERS.length; i++) {
+                    await dao.addMember(MEMBERS[i].address)
+                }
+    
+                await dao.connect(member1).createProposal(...proposalArgs1)
+                await time.increase(ONE_WEEK)
+            })
+
+            it("should throw when voting after voting period", async() => {
+                await expect(dao.connect(member1).castVote(1, YAY))
+                    .to.be.revertedWith("AssemblyDAO: voting period has ended")
+            })
+        })
+    })
+
+    describe("initAssembly", async() => {
+        context("when a proposal is created", async() => {
+            beforeEach(async() => {
+                for (let i = 0; i < MEMBERS.length; i++) {
+                    await dao.addMember(MEMBERS[i].address)
+                }
+    
+                await dao.connect(member1).createProposal(...proposalArgs1)
+            })
+
+            context("when quorum is not reached", async() => {
+                beforeEach(async() => {
+                    await time.increase(ONE_WEEK)   
+                })
+
+                it("should throw when calling initAssembly", async() => {
+                    await expect(dao.initAssembly(1))
+                        .to.be.revertedWith("AssemblyDAO: quorum not reached")
+                })
+            })
+
+            context("when quorum is reached with majority NAY", async() => {
+                beforeEach(async() => {
+                    for (let i = 0; i < MEMBERS.length; i++) {
+                        await dao.connect(MEMBERS[i]).castVote(1, MEMBER_VOTES_NAY[i])
+                    }
+                    await time.increase(ONE_WEEK)   
+                })
+
+                it("should throw with losing majority", async() => {
+                    await expect(dao.connect(tribune).initAssembly(1))
+                        .to.be.revertedWith("AssemblyDAO: the majority voted NAY")
+                })
+            })
+
+            context("when quorum is reach with majority YAY", async() => {
+                beforeEach(async() => {
+                    for (let i = 0; i < MEMBERS.length; i++) {
+                        await dao.connect(MEMBERS[i]).castVote(1, MEMBER_VOTES_YAY[i])
+                    }
+                    await time.increase(ONE_WEEK)
+                })
+
+                it("should initialize the assembly", async() => {
+                    await dao.connect(tribune).initAssembly(1)
+
+                    res = await dao.assemblies(1)
+                    expect(res.title).to.eq(proposalArgs1[0])
+                    expect(res.description).to.eq(proposalArgs1[1])
+                    expect(res.location).to.eq(proposalArgs1[2])
+                    expect(res.assemblyNumber).to.eq(1)
+                })
+
+                it("should throw when initialized from non-tribune", async() => {
+                    await expect(dao.connect(member1).initAssembly(1))
+                        .to.be.revertedWith("Tribune: caller does not have permission")
+                })
+            })
+        })
+
     })
 });
