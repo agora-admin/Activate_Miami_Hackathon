@@ -37,7 +37,7 @@ contract Tribune is AccessControl {
         totalTribunes++;
     }
 
-    /// @notice revokes tribune role to user
+    /// @notice revokes tribune role from user
     /// @param user to whom the role is being revoked 
     function revokeTribune(address user) public onlyTribune() {
         _revokeRole(TRIBUNE_ROLE, user);
