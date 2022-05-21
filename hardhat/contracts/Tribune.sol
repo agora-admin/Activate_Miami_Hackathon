@@ -15,6 +15,7 @@ contract Tribune is AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
+    /// @notice for now, the default admin also has access
     modifier onlyTribune() {
         require(
             hasRole(TRIBUNE_ROLE, msg.sender) ||
@@ -25,6 +26,8 @@ contract Tribune is AccessControl {
         _;
     }
 
+    /// @notice grants tribune role to user
+    /// @param user user to whom the role is being granted 
     function grantTribune(address user) public onlyTribune() {
         require(
             totalTribunes <= TRIBUNE_MAX,
@@ -34,6 +37,8 @@ contract Tribune is AccessControl {
         totalTribunes++;
     }
 
+    /// @notice revokes tribune role to user
+    /// @param user user to whom the role is being granted 
     function revokeTribune(address user) public onlyTribune() {
         _revokeRole(TRIBUNE_ROLE, user);
         totalTribunes--;

@@ -18,21 +18,22 @@ contract AssemblyDAO is Proposals, Tribune {
     enum VoteType { ABSTAIN, YAY, NAY }
 
     // assemblyId => Assembly
-    mapping(uint256 => Assembly) assemblies;
+    mapping(uint256 => Assembly) public assemblies;
     // address => isMember
     mapping(address => bool) public isMember;
     // proposalId => member => vote
     mapping(uint256 => mapping(VoteType => uint256)) castedVotes;
     // proposalId => address => hasVoted
-    mapping(uint256 => mapping(address => bool)) hasVoted;
+    mapping(uint256 => mapping(address => bool)) public hasVoted;
     // proposalId => totalVotes
-    mapping(uint256 => uint256) totalVotes;
+    mapping(uint256 => uint256) public totalVotes;
 
     uint256 public totalAssemblies;
     uint256 public totalMembers;
     uint256 public constant VOTING_PERIOD = 604800;
     uint256 public constant QUORUM = 5; // FIX ME
 
+    /// @notice modifier that allows access only to members of the DAO
     modifier onlyMembers() {
         require(
             isMember[msg.sender],
@@ -41,6 +42,10 @@ contract AssemblyDAO is Proposals, Tribune {
         _;
     }
 
+    /// @notice casts a vote for a proposal identifier. Only DAO members can vote
+    ///         and voting must take place before the proposal's startTime + one week
+    /// @param proposalId the proposal identifer
+    /// @param vote is an enumerator and values can only be ABSTAIN, YAY, or NAY
     function castVote(uint256 proposalId, VoteType vote) external onlyMembers() {
         Proposal memory proposal = proposalInfo[proposalId];
         require(
@@ -60,12 +65,17 @@ contract AssemblyDAO is Proposals, Tribune {
         totalVotes[proposalId]++;
     }
 
+    /// @notice adds member to the DAO. Can only be called by the tribune
+    /// @param member is the member-to-be of the DAO
     function addMember(address member) external onlyTribune() {
         require(!isMember[member], "AssemblyDAO: is already a member");
         totalMembers++;
         isMember[member] = true;
     }
 
+    /// @notice removes member from the DAO. Can only be called by either the tribune
+    ///         or the member themself
+    /// @param member is the member-to-be-removed of the DAO
     function removeMember(address member) external {
         require(
             isMember[member],
@@ -81,6 +91,11 @@ contract AssemblyDAO is Proposals, Tribune {
         isMember[member] = false;
     }
 
+    /// @notice creates an assembly proposal. This can only be called by DAO members.
+    /// @param title the assembly's proposed title
+    /// @param description the assembly's proposed description
+    /// @param location open-ended location. Could be physical but will probably
+    ///                  be a video stream address
     function createProposal(
         string memory title,
         string memory description,
@@ -89,6 +104,9 @@ contract AssemblyDAO is Proposals, Tribune {
         _createProposal(title, description, location);
     }
 
+    /// @notice initializes the assembly and can only be called by a tribune if and only id
+    ///         both the quorum is reached and has a majority of YAY votes
+    /// @param proposalId proposal identifier
     function initAssembly(uint256 proposalId) external onlyTribune() {
         require(
             castedVotes[proposalId][VoteType.YAY] >=
@@ -110,6 +128,11 @@ contract AssemblyDAO is Proposals, Tribune {
         assemblies[totalAssemblies] = newAssembly;
     }
 
+    /// @notice returns the amount of votes for specificed VoteType per proposalId
+    /// @dev in future iterations, mappings should not be public and should have explicit 
+    ///      getters like this
+    /// @param proposalId proposal identifier
+    /// @param vote is an enumerator and values can only be ABSTAIN, YAY, or NAY
     function getVoteCount(uint256 proposalId, VoteType vote) external view returns(uint256){
         return castedVotes[proposalId][vote];
     }
