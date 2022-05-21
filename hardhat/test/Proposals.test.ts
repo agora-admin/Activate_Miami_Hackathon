@@ -1,19 +1,14 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
 import { Contract } from "ethers";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { proposalArgs1 } from "./utils";
 
 describe("Proposals", () => {
     
-    let alice: SignerWithAddress;
-    let bob: SignerWithAddress;
     let res: any;
     let proposals: Contract;
 
-
     beforeEach(async() => {
-        [alice, bob] = await ethers.getSigners();
         const Proposals = await ethers.getContractFactory("$Proposals");
         proposals = await Proposals.deploy();
     })
@@ -52,6 +47,4 @@ describe("Proposals", () => {
             })
         })
     })
-
-  
 });

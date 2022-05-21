@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
-import { Contract, BigNumber } from "ethers";
+import { Contract } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { time } from "@openzeppelin/test-helpers";
 import { proposalArgs1, proposalArgs2 } from "./utils";
@@ -170,6 +170,27 @@ describe("AssemblyDAO", () => {
                 expect(res.timeStart.toNumber())
                     .to.be.greaterThan(initBlock)
             })
+
+            context("when a proposal is created", async() => {
+                beforeEach(async() => {
+                    await dao.connect(member1).createProposal(...proposalArgs1)
+                })
+
+                it("should create a second proposal", async() => {
+                    let initBlock = await ethers.provider.getBlockNumber()
+
+                    await dao.connect(member1).createProposal(...proposalArgs2)
+                    expect(await dao.totalProposals())
+                        .to.eq(2)
+
+                    res = await dao.proposalInfo(2)
+                    expect(res.title).to.eq(proposalArgs2[0])
+                    expect(res.description).to.eq(proposalArgs2[1])
+                    expect(res.location).to.eq(proposalArgs2[2])
+                    expect(res.timeStart.toNumber())
+                        .to.be.greaterThan(initBlock)
+                })
+            })
         })
     })
 
@@ -211,48 +232,35 @@ describe("AssemblyDAO", () => {
                 await expect(dao.connect(member1).castVote(1, NAY))
                     .to.be.revertedWith("AssemblyDAO: member already voted")
             })
-        })
 
-        context("when all members vote", async() => {
-            beforeEach(async() => {
-                for (let i = 0; i < MEMBERS.length; i++) {
-                    await dao.addMember(MEMBERS[i].address)
-                }
-    
-                await dao.connect(member1).createProposal(...proposalArgs1)
-
+            context("when all members vote", async() => {
                 for (let i = 0; i < MEMBERS.length; i++) {
                     await dao.connect(MEMBERS[i]).castVote(1, MEMBER_VOTES_YAY[i])
                 }
+
+                it("should track total votes", async() => {
+                    expect(await dao.totalVotes(1))
+                        .to.eq(MEMBERS.length)
+                })
+
+                it("should track if member voted", async() => {
+                    expect(await dao.hasVoted(1, member1.address))
+                        .to.be.true
+
+                    expect(await dao.hasVoted(1, owner.address))
+                        .to.be.false
+                })
             })
 
-            it("should track total votes", async() => {
-                expect(await dao.totalVotes(1))
-                    .to.eq(MEMBERS.length)
-            })
+            context("when the voting period has ended", async() => {
+                beforeEach(async() => {
+                    await time.increase(ONE_WEEK)
+                })
 
-            it("should track if member voted", async() => {
-                expect(await dao.hasVoted(1, member1.address))
-                    .to.be.true
-
-                expect(await dao.hasVoted(1, owner.address))
-                    .to.be.false
-            })
-        })
-
-        context("when the voting period has ended", async() => {
-            beforeEach(async() => {
-                for (let i = 0; i < MEMBERS.length; i++) {
-                    await dao.addMember(MEMBERS[i].address)
-                }
-    
-                await dao.connect(member1).createProposal(...proposalArgs1)
-                await time.increase(ONE_WEEK)
-            })
-
-            it("should throw when voting after voting period", async() => {
-                await expect(dao.connect(member1).castVote(1, YAY))
-                    .to.be.revertedWith("AssemblyDAO: voting period has ended")
+                it("should throw when voting after voting period", async() => {
+                    await expect(dao.connect(member1).castVote(1, YAY))
+                        .to.be.revertedWith("AssemblyDAO: voting period has ended")
+                })
             })
         })
     })

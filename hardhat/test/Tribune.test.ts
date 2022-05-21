@@ -12,6 +12,7 @@ describe("Tribune", () => {
     let dave: SignerWithAddress;
     let eve: SignerWithAddress;
     let frank: SignerWithAddress;
+    let MEMBERS: any;
 
     let TRIBUNE_ROLE: string;
     let tribune: Contract;
@@ -19,6 +20,7 @@ describe("Tribune", () => {
 
     beforeEach(async() => {
         [owner, alice, bob, carol, dave, eve, frank] = await ethers.getSigners();
+        MEMBERS = [alice, bob, carol, dave, eve, frank]
 
         const Tribune = await ethers.getContractFactory("Tribune");
         tribune = await Tribune.deploy();
@@ -113,15 +115,11 @@ describe("Tribune", () => {
             })
         })
 
-        context("when mac tribunes are set", async() => {
+        context("when max tribunes are set", async() => {
             beforeEach(async() => {
-                await Promise.all([
-                    tribune.grantTribune(alice.address),
-                    tribune.grantTribune(bob.address),
-                    tribune.grantTribune(carol.address),
-                    tribune.grantTribune(dave.address),
-                    tribune.grantTribune(eve.address)
-                ])
+                for (let i = 0; i < MEMBERS.length - 1; i++) {
+                    await tribune.grantTribune(MEMBERS[i].address)
+                }
             })
 
             it("should revert exceeding max tribunes", async() => {
