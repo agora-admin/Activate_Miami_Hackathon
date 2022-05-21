@@ -27,7 +27,7 @@ contract Tribune is AccessControl {
     }
 
     /// @notice grants tribune role to user
-    /// @param user user to whom the role is being granted 
+    /// @param user to whom the role is being granted 
     function grantTribune(address user) public onlyTribune() {
         require(
             totalTribunes <= TRIBUNE_MAX,
@@ -38,7 +38,7 @@ contract Tribune is AccessControl {
     }
 
     /// @notice revokes tribune role to user
-    /// @param user user to whom the role is being granted 
+    /// @param user to whom the role is being revoked 
     function revokeTribune(address user) public onlyTribune() {
         _revokeRole(TRIBUNE_ROLE, user);
         totalTribunes--;
