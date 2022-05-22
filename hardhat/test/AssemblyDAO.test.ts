@@ -342,14 +342,14 @@ describe("AssemblyDAO", () => {
                     expect(res.assemblyNumber).to.eq(1)
                 })
 
-                it.only("should initialize the assembly", async() => {
-                    expect(await dao.connect(tribune)[`initAssembly(uint256)`](1))
+                it("should initialize the assembly", async() => {
+                    expect(await dao.connect(tribune).initAssembly(1))
                         .to.emit(dao, "InitAssembly")
                         .withArgs(1, 1, proposalArgs1[0])
                 })
 
                 it("should throw when initialized from non-tribune", async() => {
-                    await expect(dao.connect(member1)[`initAssembly(uint256)`](1))
+                    await expect(dao.connect(member1).initAssembly(1))
                         .to.be.revertedWith("Tribune: caller does not have permission")
                 })
             })
