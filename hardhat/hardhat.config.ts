@@ -20,14 +20,14 @@ export default {
     aurora: { // testnet
       gas: "auto",
       gasPrice: "auto",
-      url: process.env.AURORA_TESTNET_KEY,
+      url: process.env.AURORA_TESTNET_ENDPOINT,
       chainId: 1313161555,
       accounts: [`0x${process.env.PRIVATE_KEY}`],
     },
     goerli: {
       gas: "auto",
       gasPrice: "auto",
-      url: process.env.GOERLI_KEY,
+      url: process.env.GOERLI_ENDPOINT,
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     } 
   }   
