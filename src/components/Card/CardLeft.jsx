@@ -1,41 +1,46 @@
 import styled from "styled-components";
-import Buttons from '../Button/Button';
 
-const Cards = styled.div`
-  height: 25rem;
-  width: 18rem;
+
+const Cards2 = styled.div`
+  width: 13rem;
+  min-height: 7.5rem;
+  max-height: 7.5rem;
   background: white;
   border: 1px solid black;
-  border-radius: .75rem;
-  // display: flex;
-  padding: 1.5rem;
-`;
-
-const Cards3 = styled.div`
-  height: 23rem;
-  width: 25rem;
-  height: 20rem;
-  width: 15.5rem;
-  background: white;
-  border: 1px solid black;
-  border-radius: .75rem;
+  border-radius: 0.75rem;
+  padding: 1rem 1.2rem 1.2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+`;
+
+const CardMembers = styled.div`
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
   // align-items: center;
+  width: 11rem;
+  height: 17rem;
+  border: 1px solid black;
+  border-radius: 0.75rem;
   padding: 2rem 1.5rem;
-  margin: 3rem 0;
+  background: #98dddf;
+  box-shadow: 4px 4px rgba(0, 0, 0, 1);
 `;
 
 const CardImage3 = styled.div`
-  width: 25%;
-  height: 33%;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
   background: blue;
+  border: 1px solid black;
   // margin: 1rem;
   // display: flex;
   // flex-direction: row;
   // justify-content: flex-start;
+  box-shadow: 2px 2px rgba(0, 0, 0, 1);
 `;
+
 
 const CardInfo = styled.div`
   // border: 1px solid red;
@@ -49,28 +54,35 @@ const CardHeader = styled.h3`
   // margin: 1rem 0;
 `;
 
-const CardSubheader = styled.h5`
-  // font-size: 1rem;
-  // margin: 1rem 0;
-`;
-
-const CardText = styled.div`
-  font-size: 1rem;
-`;
-
-export default function Card() {
+export default function CardRightSide() {
   return (
     <>
-      <Cards3>
-      <CardImage3>hey</CardImage3>
-        <CardInfo>
-          <CardHeader>Start your own community</CardHeader>
-          <CardSubheader>Create a DAO and invite your peers etc etc</CardSubheader>
-          <CardText>Body</CardText>
+      <CardMembers>
+      <CardInfo>
+          <CardHeader id='cardheader3'>DAO Ambassadors</CardHeader>
       </CardInfo>
-      <Buttons>Create a Community</Buttons>
-      </Cards3>
+        <div style={{display: "flex", marginBottom:"2rem"}}>
+        <CardImage3 id="pink"/>
+        <CardImage3 id="aqua"/>
+        <CardImage3 id="yellow"/>
+        <CardImage3 id="teal"/>
+        </div>
+<div>
 
+
+        <CardInfo>
+          <CardHeader id='cardheader3'>DAO Members</CardHeader>
+      </CardInfo>
+        <div style={{display: "flex"}}>
+        <CardImage3 id="pink"/>
+        <CardImage3 id="aqua"/>
+        <CardImage3 id="yellow"/>
+        <CardImage3 id="teal"/>
+        </div>
+        </div>
+       
+      
+      </CardMembers>
     </>
   );
 }

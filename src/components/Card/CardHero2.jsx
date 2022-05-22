@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Button from "../Buttons/Buttons";
 
 const CardHero = styled.div`
-  padding: 7.5rem 0.25rem 1rem;
+  padding: 2rem 0.25rem 1rem;
   width: 100%;
   height: 15rem;
   background: linear-gradient(
@@ -15,12 +15,12 @@ const CardHero = styled.div`
 `;
 
 const CardImageHero = styled.div`
-  // height: 40%;
-  width: 100%;
-  margin-right: 1rem;
+  height: 7rem;
+  width: 7rem;
+  margin: 0 0 .5rem 1.2rem;
   border-radius: 1rem;
   background: white;
-  // border: 1px solid black;
+  border: 1px solid black;
 `;
 
 const CardInfoHero = styled.div`
@@ -55,19 +55,22 @@ export default function CardMain() {
   return (
     <>
       <CardHero id='card'>
-        {/* <CardImageHero></CardImageHero> */}
-        {/* <div
-          style={{
-            border: "1px solid black",
-            backgroundImage: "linear-gradient(#98dddf 0%, #e198ad 100%)",
-          }}
-        > */}
+        <div
+          style={{ display: "flex",
+          flexDirection:"row",
+          justifyContent: "flex-start",
+          alignItems: "end",
+          padding: ".5rem 0"
+        }}
+        >
+          <CardImageHero></CardImageHero>
         <CardInfoHero>
-          <CardHeader className='cardheader'>Kendall DAO</CardHeader>
+          <CardHeader className='cardheader'>John Doe</CardHeader>
           <CardSubheader className='subheader'>
-            Kendall DAO brings the people of Kendall together!
+            All about that crypto lyfe.
           </CardSubheader>
         </CardInfoHero>
+      </div>
         <div
           style={{
             display: "flex",
@@ -91,9 +94,9 @@ export default function CardMain() {
                 // border: "1px solid purple",
               }}
             >
-              <CardValue className='cardhero-value'>$15.3k</CardValue>
+              <CardValue className='cardhero-value'>9000+</CardValue>
               <CardSubheader className='subheader'>
-                Total Value Locked
+                NFT Collected
               </CardSubheader>
             </div>
             <div
@@ -102,12 +105,12 @@ export default function CardMain() {
                 flexDirection: "column",
               }}
             >
-              <CardValue className='cardhero-value'>36,000</CardValue>
-              <CardSubheader className='subheader'>Members</CardSubheader>
+              <CardValue className='cardhero-value'>88</CardValue>
+              <CardSubheader className='subheader'>Followers</CardSubheader>
             </div>
           </div>
           <div>
-            <Button>Join</Button>
+            <Button>Follow</Button>
           </div>
         </div>
         {/* </div> */}

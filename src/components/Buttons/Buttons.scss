@@ -1,0 +1,27 @@
+@use '../../styles/partials/colors' as *;
+@use '../../styles/partials/fonts' as *;
+@use '../../styles/partials/variables' as *;
+
+.button {
+  font-size: $button-font-size;
+  font-weight: 500;
+  border-radius: 1rem;
+  box-shadow: $boxshadow;
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: .5rem 1rem;
+}
+
+#videoicon {
+  border: 1px solid black;
+  margin: 0 1rem 0 0;
+  font-size: .65rem;
+}
+
+#arrowicon {
+  margin: 0 0 .2rem 0;
+  font-size: .55rem;
+}
+

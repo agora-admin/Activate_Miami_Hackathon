@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import YourCom from '../components/YourCom/YourCom';
 import ExploreCom from "../components/ExploreCom/ExploreCom";
-import CardMain from "../components/Card/CardHero";
+import CardMain2 from "../components/Card/CardHero2";
 import SidebarRight from "../components/SidebarRight/SidebarRight";
+import ProposalCards from "../components/ProposalCards/ProposalCards";
+import CardDiscovery2 from '../components/Card/CardDiscovery2';
+
 const MainSection = styled.div`
 // display: flex;
 // flex-direction: column;
@@ -13,41 +16,26 @@ const MainSection = styled.div`
 
 `;
 
+const Header = styled.h3`
+  // font-size: 0.75rem;
+  // margin: 1rem 1rem 1.5rem 1rem;
+  margin: 1.5rem 0 1rem 0;
+  // width: 25rem;
+  // border: 1px solid black;
+  // font-weight: 600;
+  // margin-top: 1rem;
+  margin: 2rem 0;
+`;
 
 export default function Proposal() {
   return(
     <div>
-    {/* // <div style={{border: '4px solid red', display: 'flex'}}> */}
-    <MainSection>
-    <CardMain/>
-    {/* <YourCom/> */}
-    <ExploreCom/>
-    <ExploreCom/>
-
-    {/* <div style={{border: '4px solid blue'}}> */}
-
-    {/* <SidebarRight/> */}
-    {/* </div> */}
-    {/* <NavBar></NavBar> */}
-    {/* <Card/> */}
-    
-    {/* <CardHorizontal/>
-    <CardWide/> */}
-
-    {/* <CardHorizontal/>
-    <CardHorizontal/> */}
-    </MainSection>
-{/*     
-    <div style={{display: "flex"}}>
-    <CardWide/>
-    <CardWide/>
-    <CardWide/>
-    </div> */}
-
-    {/* <CardScheduled />
-    <CardPending />  */}
-      {/* <Text/> */}
+    <CardMain2/>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Header id='bodyheader3'>Attendance Badges</Header>
+      </div>
+    <ProposalCards/>
+    <ProposalCards/>
     </div>
-    // </div>
   )
 }
