@@ -128,16 +128,28 @@ contract AssemblyDAO is Proposals, Tribune {
             totalVotes[proposalId] >= QUORUM,
             "AssemblyDAO: quorum not reached"
         );
-        totalAssemblies++;
         Proposal memory p = proposalInfo[proposalId];
+        _initAssembly(p.title, p.description, p.location);
+    }
+
+    function initAssembly(
+        string memory title,
+        string memory description,
+        string memory location
+        ) external onlyTribune() {
+        _initAssembly(title, description, location);
+    }
+
+    function _initAssembly(string memory _title, string memory _description, string memory _location) internal {
+        totalAssemblies++;
         Assembly memory newAssembly = Assembly({
-            title: p.title,
-            description: p.description,
-            location: p.location,
+            title: _title,
+            description: _description,
+            location: _location,
             assemblyNumber: totalAssemblies
         });
         assemblies[totalAssemblies] = newAssembly;
-        emit InitAssembly(proposalId, totalAssemblies, p.title);
+        emit InitAssembly(0, totalAssemblies, _title);
     }
 
     /// @notice returns the amount of votes for specificed VoteType per proposalId
