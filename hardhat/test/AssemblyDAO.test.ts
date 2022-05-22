@@ -59,6 +59,12 @@ describe("AssemblyDAO", () => {
                     .to.be.true
             })
 
+            it("should emit an event", async() => {
+                expect(await dao.addMember(member1.address))
+                    .to.emit(dao, "AddMember")
+                    .withArgs(member1.address, 1)
+            })
+
             it("should incremement totalMembers", async() => {
                 expect(await dao.totalMembers())
                     .to.eq(0)
@@ -112,6 +118,12 @@ describe("AssemblyDAO", () => {
                 await dao.connect(member1).removeMember(member1.address)
                 expect(await dao.isMember(member1.address))
                     .to.be.false
+            })
+
+            it("should emit an event", async() => {
+                expect(await dao.connect(tribune).removeMember(member1.address))
+                .to.emit(dao, "RemoveMember")
+                .withArgs(member1.address, tribune.address, 1)
             })
 
             it("should throw when member to remove is not a member", async() => {
@@ -218,6 +230,12 @@ describe("AssemblyDAO", () => {
                     .to.eq(2)
             })
 
+            it("should emit an event", async() => {
+                expect(await dao.connect(member1).castVote(1, YAY))
+                .to.emit(dao, "Vote")
+                .withArgs(1, YAY)
+            })
+
             it("should throw when non member votes", async() => {
                 await expect(dao.connect(notMember).castVote(1, YAY))
                     .to.be.revertedWith("AssemblyDAO: caller is not a member")
@@ -322,6 +340,12 @@ describe("AssemblyDAO", () => {
                     expect(res.description).to.eq(proposalArgs1[1])
                     expect(res.location).to.eq(proposalArgs1[2])
                     expect(res.assemblyNumber).to.eq(1)
+                })
+
+                it("should initialize the assembly", async() => {
+                    expect(await dao.connect(tribune).initAssembly(1))
+                        .to.emit(dao, "InitAssembly")
+                        .withArgs(1, 1, proposalArgs1[0])
                 })
 
                 it("should throw when initialized from non-tribune", async() => {

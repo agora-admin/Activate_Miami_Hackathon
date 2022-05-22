@@ -33,6 +33,11 @@ describe("Proposals", () => {
                     .to.eq(2)
             })
 
+            it("should emit an event", async() => {
+                expect(await proposals.$_createProposal(...proposalArgs1))
+                    .to.emit(proposals, "CreateProposal")
+            })
+
             it("should set the correct values", async() => {
                 let initBlock = await ethers.provider.getBlockNumber()
                 
