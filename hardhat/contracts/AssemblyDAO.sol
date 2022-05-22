@@ -31,7 +31,7 @@ contract AssemblyDAO is Proposals, Tribune {
     uint256 public totalAssemblies;
     uint256 public totalMembers;
     uint256 public constant VOTING_PERIOD = 604800;
-    uint256 public constant QUORUM = 5; // FIX ME
+    uint256 public constant QUORUM = 5; // tmp
 
     event AddMember(address indexed newMember, uint256 indexed totalMembers);
     event RemoveMember(address indexed member, address indexed remover, uint256 totalMembers);
