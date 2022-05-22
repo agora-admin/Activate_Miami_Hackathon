@@ -3,6 +3,8 @@ import "@nomiclabs/hardhat-web3";
 import "solidity-coverage";
 import "hardhat-gas-reporter";
 import "hardhat-exposed";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export default {
   solidity: {
@@ -13,5 +15,20 @@ export default {
         runs: 200
       }
     }
-  }
+  },
+  networks: {
+    aurora: { // testnet
+      gas: "auto",
+      gasPrice: "auto",
+      url: process.env.AURORA_TESTNET_KEY,
+      chainId: 1313161555,
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+    },
+    goerli: {
+      gas: "auto",
+      gasPrice: "auto",
+      url: process.env.GOERLI_KEY,
+      accounts: [`0x${process.env.PRIVATE_KEY}`]
+    } 
+  }   
 }
