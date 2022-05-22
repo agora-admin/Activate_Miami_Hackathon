@@ -17,6 +17,8 @@ contract Proposals {
 
     uint256 public totalProposals;
 
+    event CreateProposal(string indexed title, uint256 indexed timeStart, uint256 indexed proposalId);
+
     /// @notice internal function to create a DAO proposal for an assembly
     /// @param _title the assembly's proposed title
     /// @param _description the assembly's proposed description
@@ -28,12 +30,14 @@ contract Proposals {
         string memory _location
         ) internal {
             totalProposals++;
+            uint256 start = block.timestamp;
             Proposal memory newProposal = Proposal({
                 title: _title,
                 description: _description,
                 location: _location,
-                timeStart: block.timestamp
+                timeStart: start
             });
             proposalInfo[totalProposals] = newProposal;
+            emit CreateProposal(_title, start, totalProposals);
     }
 }

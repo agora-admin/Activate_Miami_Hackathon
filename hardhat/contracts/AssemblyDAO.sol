@@ -33,6 +33,15 @@ contract AssemblyDAO is Proposals, Tribune {
     uint256 public constant VOTING_PERIOD = 604800;
     uint256 public constant QUORUM = 5; // FIX ME
 
+    event AddMember(address indexed newMember, uint256 indexed totalMembers);
+    event RemoveMember(address indexed member, address indexed remover, uint256 totalMembers);
+    event Vote(uint256 indexed proposalId, VoteType indexed vote);
+    event InitAssembly(
+        uint256 indexed proposalId,
+        uint256 indexed assemblyId,
+        string indexed title
+    );
+
     /// @notice modifier that allows access only to members of the DAO
     modifier onlyMembers() {
         require(
@@ -71,6 +80,7 @@ contract AssemblyDAO is Proposals, Tribune {
         require(!isMember[member], "AssemblyDAO: is already a member");
         totalMembers++;
         isMember[member] = true;
+        emit AddMember(member, totalMembers);
     }
 
     /// @notice removes member from the DAO. Can only be called by either the tribune
@@ -89,6 +99,7 @@ contract AssemblyDAO is Proposals, Tribune {
         );
         totalMembers--;
         isMember[member] = false;
+        emit RemoveMember(member, msg.sender, totalMembers);
     }
 
     /// @notice creates an assembly proposal. This can only be called by DAO members.
@@ -117,15 +128,16 @@ contract AssemblyDAO is Proposals, Tribune {
             totalVotes[proposalId] >= QUORUM,
             "AssemblyDAO: quorum not reached"
         );
+        totalAssemblies++;
         Proposal memory p = proposalInfo[proposalId];
         Assembly memory newAssembly = Assembly({
             title: p.title,
             description: p.description,
             location: p.location,
-            assemblyNumber: proposalId
+            assemblyNumber: totalAssemblies
         });
-        totalAssemblies++;
         assemblies[totalAssemblies] = newAssembly;
+        emit InitAssembly(proposalId, totalAssemblies, p.title);
     }
 
     /// @notice returns the amount of votes for specificed VoteType per proposalId
