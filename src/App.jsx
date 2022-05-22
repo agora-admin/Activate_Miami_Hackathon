@@ -41,7 +41,7 @@ function App() {
           className='App4'
           style={{
             margin: "5rem 8rem 5rem 2rem",
-            border: "1px solid red",
+            border: "1px solid transparent",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-around",
