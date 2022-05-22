@@ -19,6 +19,7 @@ const Text = styled.p`
   font-weight: 600;
 `;
 
+
 const Input = styled.input`
   width: 18rem;
   // margin: 0 1rem;
