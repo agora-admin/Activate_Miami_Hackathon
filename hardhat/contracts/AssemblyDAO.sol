@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 // Activate_Miami_Hackathon Agora-Square (contracts/AssemblyDAO.sol)
-
 pragma solidity 0.8.11;
 
 import { Proposals } from "./Proposals.sol";
@@ -27,11 +26,20 @@ contract AssemblyDAO is Proposals, Tribune {
     mapping(uint256 => mapping(address => bool)) public hasVoted;
     // proposalId => totalVotes
     mapping(uint256 => uint256) public totalVotes;
+    // address => assemblyId
+    mapping(uint256 => address[]) public attendees;
+
+   
+
+
 
     uint256 public totalAssemblies;
     uint256 public totalMembers;
+    uint256 public assemblyId;
     uint256 public constant VOTING_PERIOD = 604800;
     uint256 public constant QUORUM = 5; // FIX ME
+
+   
 
     /// @notice modifier that allows access only to members of the DAO
     modifier onlyMembers() {
@@ -136,5 +144,34 @@ contract AssemblyDAO is Proposals, Tribune {
     function getVoteCount(uint256 proposalId, VoteType vote) external view returns(uint256){
         return castedVotes[proposalId][vote];
     }
+
+       // function that takes the assemblyNumber and returns address of attendees
+
+    function setAssemblyAttendee(uint256 assemblyNumber, address member) external onlyTribune() {
+        //require(
+        //     assemblies[assemblyNumber].assemblyNumber == assemblyNumber,
+        //     "AssemblyDAO: assembly does not exist"
+        // );
+        address[] memory arr = attendees[assemblyNumber];
+        uint256 len = attendees[assemblyNumber].length;
+        unchecked {
+
+        for (uint256 i; i < len; i++) {
+            if (arr[i] == member) {
+                revert();
+            }
+        }
+        }
+        
+        attendees[assemblyNumber].push(member);
+    
+    }
+
+   function getAssemblyAttendees(uint256 assemblyNumber) external view returns(address[] memory) {
+        return attendees[assemblyNumber];
+       
+   }
+
+   
 
 }

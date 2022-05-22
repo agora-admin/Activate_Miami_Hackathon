@@ -28,6 +28,7 @@ describe("AssemblyDAO", () => {
     let res: any;
     let dao: Contract;
     let MEMBERS: any;
+    let attendees: SignerWithAddress;
 
 
     beforeEach(async() => {
@@ -327,9 +328,21 @@ describe("AssemblyDAO", () => {
                 it("should throw when initialized from non-tribune", async() => {
                     await expect(dao.connect(member1).initAssembly(1))
                         .to.be.revertedWith("Tribune: caller does not have permission")
-                })
-            })
-        })
+                });
 
-    })
+                it.only("Should set the assembly attendee", async() => {
+
+                    await dao.connect(tribune).initAssembly(1);
+
+                    await dao.connect(tribune).setAssemblyAttendee(1, member1.address);
+
+                    res = await dao.getAssemblyAttendees(1);
+                    expect(res[0]).to.eq(member1.address);
+
+            });
+        });
+
+    });
+});
+
 });
