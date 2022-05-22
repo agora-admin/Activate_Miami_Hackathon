@@ -43,5 +43,4 @@ contract Tribune is AccessControl {
         _revokeRole(TRIBUNE_ROLE, user);
         totalTribunes--;
     }
-
 }
